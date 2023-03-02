@@ -6,7 +6,7 @@ newmtl L_rche
 Ka 0.000000 0.000000 0.000000
 Kd 0.658824 0.572549 0.447059
 Ks 0.330000 0.330000 0.330000
-map_Kd WOHO Anna/L_rche.jpg
+map_Kd woho-model/L_rche.jpg
 
 newmtl _
 Ka 0.000000 0.000000 0.000000

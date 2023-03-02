@@ -2,7 +2,7 @@
 # Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
 # File units = centimeters
 
-mtllib WOHO Anna.mtl
+mtllib woho-model.mtl
 
 g Mesh1 Group1 Model
 
