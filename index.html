@@ -15,32 +15,35 @@
             }
           }
         </script>
-		<script type="module" src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/MTLLoader.js"></script>
-		<script type="module" src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/OBJLoader.js"></script>
+	
 
 	</head>
 
 	<body>
 		<div id="info">
-		 Schau dir das WoHo genau an
-		</div>
+            Wie viele m² Glas werden für den Einbau der Fenster benötigt?		
+        </div>
 
 		<script type="module">
-        
-        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.module.js';
+
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
 
 
         import { MTLLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/MTLLoader.js';
         import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/OBJLoader.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
             let camera, scene, renderer;
-
 			let mouseX = 0, mouseY = 0;
-
 			let windowHalfX = window.innerWidth / 2;
 			let windowHalfY = window.innerHeight / 2;
 
+            //for calculating the zoom
+            let touchStart = new THREE.Vector2();
+            let distanceStart = 0;
 
+            //eventlistener
+            document.addEventListener('touchmove', onDocumentTouchMove);
 
 			init();
 			animate();
@@ -54,30 +57,44 @@
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
 				camera.position.z = 250;
 
+
+				//
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.outputEncoding = THREE.sRGBEncoding;
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//
+
+
+
 				// scene
-
 				scene = new THREE.Scene();
-
-                scene.background = new THREE.Color('edf5e1'); // Set the background color to black
+                scene.background = new THREE.Color('#958FF3'); // Set the background color to black
 
 
 				// const ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 				// scene.add( ambientLight );
 
-				const pointLight = new THREE.PointLight(0xffffff, 1);
+           
+
+                // controls for zooming
+                const controls = new OrbitControls(camera, renderer.domElement);
+                scene.add(controls);
+
+                // Light
+				const pointLight = new THREE.PointLight('0xcccccc', 0.5);
                 pointLight.position.set(0, 0, 50);
                 scene.add(pointLight);
 				scene.add( camera );
 
 				// model
-
 				const onProgress = function ( xhr ) {
-
 					if ( xhr.lengthComputable ) {
-
 						const percentComplete = xhr.loaded / xhr.total * 100;
 						console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-
 					}
 
 				};
@@ -94,77 +111,47 @@
 							.load( './assets/woho-model.obj', function ( object ) {
 
                                 object.scale.set(0.01, 0.01, 0.01);
-                                object.position.y = - 95;
+                                object.position.y = - 55;
+                                object.position.x =  - 30;
+
                                 scene.add( object );
 
-                                camera.position.z = 300;
+                                camera.position.z = 250;
 
 							}, onProgress );
 
 					} );
 
-				//
-
-				renderer = new THREE.WebGLRenderer();
-				renderer.outputEncoding = THREE.sRGBEncoding;
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				document.addEventListener( 'mousemove', onDocumentMouseMove );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize );
 
 			}
-
-			function onWindowResize() {
-
-				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-                        // Erstellen Sie eine Variable für den Touch-Startpunkt
-            let touchStart = new THREE.Vector2();
-
-            // Erstellen Sie einen Event-Listener für das touchmove-Ereignis
-            document.addEventListener('touchmove', onDocumentTouchMove);
 
             function onDocumentTouchMove(event) {
-                // Verwenden Sie event.stopPropagation(), um das Ereignis anzuhalten
-                event.stopPropagation();
-                // Greifen Sie auf die ersten Touch-Positionen zu, um die aktuelle Position zu erhalten
-                let x = event.touches[0].clientX;
-                let y = event.touches[0].clientY;
+                // Verhindere das Scrollen der Seite
+                event.preventDefault();
 
-                // Berechnen Sie den Unterschied zwischen dem aktuellen Punkt und dem Startpunkt
-                let deltaX = x - touchStart.x;
-                let deltaY = y - touchStart.y;
+                // Greife auf die Touch-Positionen zu, um die aktuelle Position zu erhalten
+                let x1 = event.touches[0].clientX;
+                let y1 = event.touches[0].clientY;
+                let x2 = event.touches[1].clientX;
+                let y2 = event.touches[1].clientY;
 
-                // Bewegen Sie die Kamera oder das Modell, indem Sie den Unterschied anwenden
-                // Hier ist ein Beispiel für die Bewegung der Kamera
-                camera.position.x -= deltaX * 0.05;
-                camera.position.y += deltaY * 0.05;
+                // Berechne den Abstand zwischen den Fingern
+                let distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-                // Setzen Sie den Startpunkt für den nächsten Touch
-                touchStart.set(x, y);
-            }
-			
-            function onDocumentMouseMove( event ) {
+                // Wenn es das erste touchmove-Ereignis ist, setze den Startwert für die Distanz
+                if (distanceStart === 0) {
+                    distanceStart = distance;
+                }
 
-				mouseX = ( event.clientX - windowHalfX ) / 2;
-				mouseY = ( event.clientY - windowHalfY ) / 2;
+                // Berechne den Zoom-Faktor basierend auf der Veränderung der Distanz
+                let zoomFactor = distance / distanceStart;
 
-			}
+                // Setze die Distanz zurück auf den Startwert für das nächste touchmove-Ereignis
+                distanceStart = distance;
 
-			//
+                // Setze den Zoom-Faktor für OrbitControls
+                controls.zoom *= zoomFactor;
+                }
 
 			function animate() {
 
