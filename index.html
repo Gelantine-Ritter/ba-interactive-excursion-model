@@ -88,8 +88,11 @@
 							.setPath( './' )
 							.load( './assets/woho-model.obj', function ( object ) {
 
-								object.position.y = - 95;
-								scene.add( object );
+                                object.scale.set(0.05, 0.05, 0.05); // verkleinert das Modell auf die Hälfte seiner Größe
+                                object.position.y = - 95;
+                                scene.add( object );
+
+                                camera.position.z = 250;
 
 							}, onProgress );
 
