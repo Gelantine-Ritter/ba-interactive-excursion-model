@@ -1,0 +1,21 @@
+#
+## Alias OBJ Material File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+
+newmtl L_rche
+Ka 0.000000 0.000000 0.000000
+Kd 0.658824 0.572549 0.447059
+Ks 0.330000 0.330000 0.330000
+map_Kd WOHO Anna/L_rche.jpg
+
+newmtl _
+Ka 0.000000 0.000000 0.000000
+Kd 0.501961 0.501961 0.501961
+Ks 0.330000 0.330000 0.330000
+d 0.920000
+
+newmtl FrontColor
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.330000 0.330000 0.330000
+
