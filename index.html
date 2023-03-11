@@ -17,10 +17,15 @@
 
 	<body>
 		<div id="info">
-            Wie viele m² Glas werden für den Einbau der Fenster benötigt?		
+            Wie viele m² Glas werden für den Einbau der Fenster benötigt?
         </div>
 
 		<script type="module">
+        /*
+        *  Author: Three.js example
+        *  Repository: https://github.com/mrdoob/three.js/blob/master/examples/webgl_loader_obj_mtl.html
+        *  Description: This code loads a 3D model using Three.js and allows navigation through the model.
+        */
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
         import { MTLLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/MTLLoader.js';
         import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/loaders/OBJLoader.js';
@@ -33,7 +38,7 @@
             let distanceStart = 0;
             let touchStartX = 0;
             let rotateSpeed = 0.01;
-            let rotationAngle = 0;
+            let rotationAngle = 0; // around x-axis
 
             document.addEventListener('touchmove', onDocumentTouchMove);
 
@@ -59,7 +64,7 @@
                 controls = new OrbitControls(camera, renderer.domElement);
 
 				scene = new THREE.Scene();
-                scene.background = new THREE.Color('#958FF3'); // Set the background color to black
+                scene.background = new THREE.Color('#958FF3');
 				scene.add( camera );
 
 				const pointLight = new THREE.PointLight(0xcccccc, 0.5);
